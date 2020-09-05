@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+            position: absolute;
+            z-index: -2;
+        }
+        .items {
+            list-style-type: none;
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            justify-items: center;
+            align-items: center;
+        }
+        .main_map {
+            position: relative;
+            overflow: hidden;
+        }
+        iframe{
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        // requestAnimationFrame兼容性
+        // 完成画布和全屏背景
+        var canvas = document.getElementById('canvas');
+        //
+        var width1,height1;
+        (function setWidthHeight() {
+            window.onresize = arguments.callee;
+            width1 = window.innerWidth;
+            height1 = window.innerHeight;
+            canvas.width = width1;
+            canvas.height = height1;
+            canvas.style.background = '#090909';
+        })();
+        var canCon = canvas.getContext('2d');
+        // 定义雨滴对象
+        class Drop {
+            constructor() {}
+            init () {
+                // x轴
+                this.x = random(0, width1);
+                // y轴
+                this.y = 0;
+                // 下落速度
+                this.vy = random(1,2);
+                // 最大高度
+                this.l = random(0.7*height1, 0.9*height1);
+                // 初始半径
+                this.r = 1;
+                // 半径扩大的速度
+                this.vr = 0.5;
+                // 透明度
+                this.a = 1;
+                this.va = 0.96; // 透明度系数
+            }
+            // 画出来
+            draw () {
+                // 当雨滴下落到指定位置时，需要开始画圆
+                if(this.y > this.l) {
+                    canCon.beginPath() // 再次画之前，要把笔先拿起来
+                    canCon.arc(this.x, this.y, this.r, 0, Math.PI*2,false);
+                    canCon.strokeStyle = "rgba(255,255,255,"+ this.a +")";
+                    canCon.stroke(); // 笔没有提起来
+                } else {
+                    canCon.fillStyle = '#fff';
+                    canCon.fillRect(this.x, this.y, 2, 10);
+                }
+                // 动起来
+                this.update()
+            }
+            // 动起来
+            update () {
+                // 更新坐标位置
+                if (this.y < this.l) {
+                    this.y += this.vy;
+                } else {
+                    if (this.a > 0.03) {
+                        this.r += this.vr
+                        if (this.r > 25) {
+                            this.a *= this.va
+                        }
+                    } else {
+                        this.init()
+                    }
+                }
+            }
+        }
+        // 实例化
+        var drops = []
+        for(var i = 0; i < 50; i++) {
+            setTimeout(function(){
+                var drop = new Drop()
+                drop.init()
+                drops.push(drop)
+            },i * 350)
+        }
+        // 随机生成
+        function random (min,max) {
+            return Math.random()*(max-min) + min;
+        }
+        function move() {
+
+            // 渐变
+            canCon.fillStyle = "#487eb0";
+            canCon.fillRect(0,0,width1,height1);
+            for(var j = 0; j < drops.length; j++) {
+                drops[j].draw()
+            }
+            requestAnimationFrame(move)
+        }
+        move();
+        </script>
+    <ul class="items">
+        <li><iframe src="re1.html" frameborder="0" width="480px" height="320px"></iframe>
+        <li><iframe src="3.html" framenorder="0" width="455px" height="230px"></iframe></li>
+        <li><iframe src="4.html" frameborder="0" width="455" height="230"></iframe></li>
+        <li><iframe src="5.html" frameborder="0" width="455" height="230"></iframe></li>
+    </ul>
+</body>
+
+</html>

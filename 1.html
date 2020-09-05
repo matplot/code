@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/maps/china.js"></script>
+    <style>
+        canvas {
+            display: block;
+            position: absolute;
+            z-index: -2;
+        }
+        .chart-container{
+            background-color: rgba(0,0,0,0.2);
+            position: absolute;
+            margin-left: 15px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="a0c3db7081cd414a84e59260750b59c1" class="chart-container" style="width:900px; height:500px;"></div>
+    <script>
+        // requestAnimationFrame兼容性
+        // 完成画布和全屏背景
+        var canvas = document.getElementById('canvas');
+        //
+        var width1,height1;
+        (function setWidthHeight() {
+            window.onresize = arguments.callee;
+            width1 = window.innerWidth;
+            height1 = window.innerHeight;
+            canvas.width = width1;
+            canvas.height = height1;
+            canvas.style.background = '#090909';
+        })();
+        var canCon = canvas.getContext('2d');
+        // 定义雨滴对象
+        class Drop {
+            constructor() {}
+            init () {
+                // x轴
+                this.x = random(0, width1);
+                // y轴
+                this.y = 0;
+                // 下落速度
+                this.vy = random(1,2);
+                // 最大高度
+                this.l = random(0.7*height1, 0.9*height1);
+                // 初始半径
+                this.r = 1;
+                // 半径扩大的速度
+                this.vr = 0.5;
+                // 透明度
+                this.a = 1;
+                this.va = 0.96; // 透明度系数
+            }
+            // 画出来
+            draw () {
+                // 当雨滴下落到指定位置时，需要开始画圆
+                if(this.y > this.l) {
+                    canCon.beginPath() // 再次画之前，要把笔先拿起来
+                    canCon.arc(this.x, this.y, this.r, 0, Math.PI*2,false);
+                    canCon.strokeStyle = "rgba(255,255,255,"+ this.a +")";
+                    canCon.stroke(); // 笔没有提起来
+                } else {
+                    canCon.fillStyle = '#fff';
+                    canCon.fillRect(this.x, this.y, 2, 10);
+                }
+                // 动起来
+                this.update()
+            }
+            // 动起来
+            update () {
+                // 更新坐标位置
+                if (this.y < this.l) {
+                    this.y += this.vy;
+                } else {
+                    if (this.a > 0.03) {
+                        this.r += this.vr
+                        if (this.r > 25) {
+                            this.a *= this.va
+                        }
+                    } else {
+                        this.init()
+                    }
+                }
+            }
+        }
+        // 实例化
+        var drops = []
+        for(var i = 0; i < 50; i++) {
+            setTimeout(function(){
+                var drop = new Drop()
+                drop.init()
+                drops.push(drop)
+            },i * 350)
+        }
+        // 随机生成
+        function random (min,max) {
+            return Math.random()*(max-min) + min;
+        }
+        function move() {
+
+            // 渐变
+            canCon.fillStyle = "#487eb0";
+            canCon.fillRect(0,0,width1,height1);
+            for(var j = 0; j < drops.length; j++) {
+                drops[j].draw()
+            }
+            requestAnimationFrame(move)
+        }
+        move();
+        </script>
+    <script>
+        var chart_a0c3db7081cd414a84e59260750b59c1 = echarts.init(
+            document.getElementById('a0c3db7081cd414a84e59260750b59c1'), 'white', {renderer: 'canvas'});
+        var option_a0c3db7081cd414a84e59260750b59c1 = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "color": [
+        "#c23531",
+        "#2f4554",
+        "#61a0a8",
+        "#d48265",
+        "#749f83",
+        "#ca8622",
+        "#bda29a",
+        "#6e7074",
+        "#546570",
+        "#c4ccd3",
+        "#f05b72",
+        "#ef5b9c",
+        "#f47920",
+        "#905a3d",
+        "#fab27b",
+        "#2a5caa",
+        "#444693",
+        "#726930",
+        "#b2d235",
+        "#6d8346",
+        "#ac6767",
+        "#1d953f",
+        "#6950a1",
+        "#918597"
+    ],
+    "series": [
+        {
+            "type": "map",
+            "name": "\u623f\u4ef7",
+            "label": {
+                "show": true,
+                "position": "top",
+                "margin": 8
+            },
+            "mapType": "china",
+            "data": [
+                {
+                    "name": "\u5317\u4eac",
+                    "value": [
+                        "59941"
+                    ]
+                },
+                {
+                    "name": "\u5409\u6797",
+                    "value": [
+                        "10675"
+                    ]
+                },
+                {
+                    "name": "\u6e56\u5357",
+                    "value": [
+                        "10938"
+                    ]
+                },
+                {
+                    "name": "\u56db\u5ddd",
+                    "value": [
+                        "16883"
+                    ]
+                },
+                {
+                    "name": "\u91cd\u5e86",
+                    "value": [
+                        "13956"
+                    ]
+                },
+                {
+                    "name": "\u798f\u5efa",
+                    "value": [
+                        "22327"
+                    ]
+                },
+                {
+                    "name": "\u5e7f\u4e1c",
+                    "value": [
+                        "42500"
+                    ]
+                },
+                {
+                    "name": "\u8d35\u5dde",
+                    "value": [
+                        "8931"
+                    ]
+                },
+                {
+                    "name": "\u9ed1\u9f99\u6c5f",
+                    "value": [
+                        "9960"
+                    ]
+                },
+                {
+                    "name": "\u6d77\u5357",
+                    "value": [
+                        "15925"
+                    ]
+                },
+                {
+                    "name": "\u6d59\u6c5f",
+                    "value": [
+                        "35552"
+                    ]
+                },
+                {
+                    "name": "\u5b89\u5fbd",
+                    "value": [
+                        "18212"
+                    ]
+                },
+                {
+                    "name": "\u5185\u8499\u53e4",
+                    "value": [
+                        "12009"
+                    ]
+                },
+                {
+                    "name": "\u5c71\u4e1c",
+                    "value": [
+                        "17811"
+                    ]
+                },
+                {
+                    "name": "\u4e91\u5357",
+                    "value": [
+                        "12850"
+                    ]
+                },
+                {
+                    "name": "\u7518\u8083",
+                    "value": [
+                        "13026"
+                    ]
+                },
+                {
+                    "name": "\u6c5f\u897f",
+                    "value": [
+                        "13590"
+                    ]
+                },
+                {
+                    "name": "\u6c5f\u82cf",
+                    "value": [
+                        "34677"
+                    ]
+                },
+                {
+                    "name": "\u5e7f\u897f",
+                    "value": [
+                        "13706"
+                    ]
+                },
+                {
+                    "name": "\u4e0a\u6d77",
+                    "value": [
+                        "59269"
+                    ]
+                },
+                {
+                    "name": "\u8fbd\u5b81",
+                    "value": [
+                        "12578"
+                    ]
+                },
+                {
+                    "name": "\u6cb3\u5317",
+                    "value": [
+                        "15245"
+                    ]
+                },
+                {
+                    "name": "\u5c71\u897f",
+                    "value": [
+                        "11453"
+                    ]
+                },
+                {
+                    "name": "\u5929\u6d25",
+                    "value": [
+                        "22665"
+                    ]
+                },
+                {
+                    "name": "\u6e56\u5317",
+                    "value": [
+                        "19512"
+                    ]
+                },
+                {
+                    "name": "\u65b0\u7586",
+                    "value": [
+                        "9162"
+                    ]
+                },
+                {
+                    "name": "\u9655\u897f",
+                    "value": [
+                        "15326"
+                    ]
+                },
+                {
+                    "name": "\u5b81\u590f",
+                    "value": [
+                        "12682"
+                    ]
+                },
+                {
+                    "name": "\u6cb3\u5357",
+                    "value": [
+                        "14390"
+                    ]
+                }
+            ],
+            "roam": true,
+            "zoom": 1,
+            "showLegendSymbol": true,
+            "emphasis": {}
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u623f\u4ef7"
+            ],
+            "selected": {
+                "\u623f\u4ef7": true
+            },
+            "show": false,
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "textStyle": {
+            "fontSize": 14
+        },
+        "borderWidth": 0
+    },
+    "title": [
+        {
+            "text": "Map-\u57fa\u672c\u793a\u4f8b",
+            "padding": 5,
+            "itemGap": 10
+        }
+    ],
+    "visualMap": {
+        "show": true,
+        "type": "piecewise",
+        "min": 0,
+        "max": 60000,
+        "inRange": {
+            "color": [
+                "#50a3ba",
+                "#eac763",
+                "#d94e5d"
+            ]
+        },
+        "calculable": true,
+        "inverse": false,
+        "splitNumber": 5,
+        "orient": "vertical",
+        "showLabel": true,
+        "itemWidth": 20,
+        "itemHeight": 14,
+        "borderWidth": 0
+    }
+};
+        chart_a0c3db7081cd414a84e59260750b59c1.setOption(option_a0c3db7081cd414a84e59260750b59c1);
+    </script>
+</body>
+</html>
